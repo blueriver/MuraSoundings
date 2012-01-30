@@ -28,21 +28,23 @@ function IsCFUUID(str) {
 
 <!--- Answer is a struct where each key is the item and it's value is the answer id fk --->
 
-<cfloop item="item" collection="#attributes.answer#">
-	<cfif isCFUUID(item)>
-		<cfif attributes.answer[item] is "" or isCFUUID(attributes.answer[item])>
-			<cfquery datasource="#request.pApp.settings.dsn#">
-			insert into #request.pApp.settings.tableprefix#results(owneridfk, questionidfk, answeridfk, itemidfk)
-			values(
-			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="320" value="#attributes.owner#">,
-			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#attributes.questionidfk#">,
-			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#attributes.answer[item]#">,
-			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#item#">
-			)
-			</cfquery>
+<cfif isStruct(attributes.answer)>
+	<cfloop item="item" collection="#attributes.answer#">
+		<cfif isCFUUID(item)>
+			<cfif attributes.answer[item] is "" or isCFUUID(attributes.answer[item])>
+				<cfquery datasource="#request.pApp.settings.dsn#">
+				insert into #request.pApp.settings.tableprefix#results(owneridfk, questionidfk, answeridfk, itemidfk)
+				values(
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="320" value="#attributes.owner#">,
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#attributes.questionidfk#">,
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#attributes.answer[item]#">,
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#item#">
+				)
+				</cfquery>
+			</cfif>
 		</cfif>
-	</cfif>
-</cfloop>
+	</cfloop>
+</cfif>
 				
 <cfsetting enablecfoutputonly=false>
 

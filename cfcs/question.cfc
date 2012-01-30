@@ -15,16 +15,14 @@
 
 	<cffunction name="init" access="public" returnType="question" output="false"
 				hint="Returns an instance of the CFC initialized with the correct DSN.">
-		<cfargument name="dsn" type="string" required="true" hint="DSN used for all operations in the CFC.">
-		<cfargument name="dbtype" type="string" required="true" hint="Database type.">
-		<cfargument name="tableprefix" type="string" required="true" hint="Table prefix.">
-		
-		<cfset variables.dsn = arguments.dsn>
-		<cfset variables.dbtype = arguments.dbtype>
-		<cfset variables.tableprefix = arguments.tableprefix>
+		<cfargument name="settings" type="struct" required="true" >
 
-		<cfset variables.survey = createObject("component","survey").init(variables.dsn,variables.dbtype,variables.tableprefix)>
-		<cfset variables.questiontype = createObject("component","questiontype").init(variables.dsn,variables.dbtype,variables.tableprefix)>
+		<cfset variables.dsn = arguments.settings.dsn>
+		<cfset variables.dbtype = arguments.settings.dbtype>
+		<cfset variables.tableprefix = arguments.settings.tableprefix>
+
+		<cfset variables.survey = createObject("component","survey").init(arguments.settings)>
+		<cfset variables.questiontype = createObject("component","questiontype").init(arguments.settings)>
 		
 		<cfreturn this>
 		
@@ -59,8 +57,6 @@
 		<cfargument name="surveyidfk" type="uuid" required="true" hint="Survey we are adding to.">
 		<cfargument name="questionTypeidfk" type="uuid" required="true" hint="Type of question.">
 		<cfargument name="answers" type="array" required="false" hint="Array of answer structs">
-		<cfargument name="nextquestion" type="uuid" required="false" hint="Where to go next.">
-		<cfargument name="nextquestionvalue" type="string" required="false" default="" hint="Only go to next question if answer is this.">
 
 		<cfset var newID = createUUID()>
 		<cfset var check = "">
@@ -78,9 +74,7 @@
 		</cfif>
 		
 		<cfquery datasource="#variables.dsn#">
-			insert into #variables.tableprefix#questions(id, question, rank, required, surveyidfk, questiontypeidfk
-			<cfif structKeyExists(arguments, "nextquestion")>, nextquestion</cfif>
-			<cfif len(arguments.nextquestionvalue)>, nextquestionvalue</cfif>)
+			insert into #variables.tableprefix#questions(id, question, rank, required, surveyidfk, questiontypeidfk)
 			values(
 				<cfqueryparam value="#newid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 				<cfqueryparam value="#arguments.question#" cfsqltype="CF_SQL_VARCHAR" maxlength="255">,
@@ -88,8 +82,6 @@
 				<cfqueryparam value="#arguments.required#" cfsqltype="#variables.utils.getQueryParamType(variables.dbtype,"CF_SQL_BIT")#">,
 				<cfqueryparam value="#arguments.surveyidfk#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 				<cfqueryparam value="#arguments.questionTypeidfk#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
-				<cfif structKeyExists(arguments, "nextquestion")>,<cfqueryparam value="#arguments.nextquestion#" cfsqltype="CF_SQL_VARCHAR" maxlength="35"></cfif>
-				<cfif len(arguments.nextquestionvalue)>,<cfqueryparam value="#arguments.nextquestionvalue#" cfsqltype="CF_SQL_VARCHAR" maxlength="255"></cfif>	
 				)
 		</cfquery>		
 		
@@ -98,6 +90,39 @@
 		</cfif>
 		
 		<cfreturn newID>
+
+	</cffunction>
+
+	<cffunction name="setQuestionBranches" access="public" returnType="void" output="false"
+				hint="I store question branch logic all at once.">
+		<cfargument name="questionid" type="uuid" required="true">
+		<cfargument name="data" type="array" required="true">
+		<cfset var x = "">
+		<cfset var b = "">
+		<cfset var rank = 0>
+
+		<cflock name="soundings_survey_question_#arguments.questionid#" type="exclusive" timeout="30">
+			<cfquery datasource="#variables.dsn#">
+			delete from #variables.tableprefix#questionbranches
+			where questionidfk = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.questionid#" maxlength="35">
+			</cfquery>
+
+			<cfloop index="x" from="1" to="#arrayLen(data)#">
+				<cfset b = data[x]>
+				<cfset rank++>
+				<cfquery datasource="#variables.dsn#">
+				insert into #variables.tableprefix#questionbranches(id, questionidfk, nextquestion, nextquestionvalue, rank)
+				values(
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#createUUID()#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.questionid#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#b.nextquestion#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#b.nextquestionvalue#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" value="#rank#">
+				)	
+				</cfquery>			
+			</cfloop>
+
+		</cflock>
 
 	</cffunction>
 
@@ -180,6 +205,23 @@
 		<cfreturn qAnswers>
 		
 	</cffunction>
+
+	<cffunction name="getBranches" access="public" returnType="query" output="false"
+				hint="Grabs a set of branches for a question.">
+		<cfargument name="id" type="uuid" required="true" hint="The UUID for the question.">
+		
+		<cfset var q = "">
+		
+		<cfquery name="q" datasource="#variables.dsn#">
+			select	id, nextquestion, nextquestionvalue, rank
+			from	#variables.tableprefix#questionbranches
+			where	questionidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			order by rank asc
+		</cfquery>
+		
+		<cfreturn q>
+		
+	</cffunction>
 	
 	<cffunction name="getQuestion" access="public" returnType="struct" output="false"
 				hint="Grabs a question.">
@@ -189,7 +231,7 @@
 		
 		<cfquery name="qQuestion" datasource="#variables.dsn#">
 			select	#variables.tableprefix#questions.id, surveyidfk, question, questiontypeidfk, rank, required, 
-			#variables.tableprefix#questiontypes.name as questiontype, #variables.tableprefix#questions.nextquestion, #variables.tableprefix#questions.nextquestionvalue
+			#variables.tableprefix#questiontypes.name as questiontype
 			from	#variables.tableprefix#questions, #variables.tableprefix#questiontypes
 			where	#variables.tableprefix#questions.id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and		#variables.tableprefix#questions.questiontypeidfk = #variables.tableprefix#questiontypes.id
@@ -197,6 +239,9 @@
 
 		<cfset result = variables.utils.queryToStruct(qQuestion)>
 		<cfset result.answers = getAnswers(arguments.id)>
+
+		<cfset result.branches = getBranches(arguments.id)>
+
 		<cfreturn result>
 											
 	</cffunction>
@@ -231,8 +276,7 @@
 		<cfquery name="qGetQuestions" datasource="#variables.dsn#">
 			select	#variables.tableprefix#questions.id, surveyidfk, question, questiontypeidfk, rank, required, 
 			#variables.tableprefix#questiontypes.name as questiontype, 
-			#variables.tableprefix#questiontypes.handlerroot as handlerroot,
-			#variables.tableprefix#questions.nextquestion, #variables.tableprefix#questions.nextquestionvalue
+			#variables.tableprefix#questiontypes.handlerroot as handlerroot			
 			from	#variables.tableprefix#questions, #variables.tableprefix#questiontypes
 			where	surveyidfk = <cfqueryparam value="#arguments.surveyidfk#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and		#variables.tableprefix#questions.questiontypeidfk = #variables.tableprefix#questiontypes.id
@@ -241,7 +285,12 @@
 			</cfif>
 			order by rank asc
 		</cfquery>
-		
+
+		<cfif isDefined("arguments.rank")>
+			<cfset queryAddColumn(qGetQuestions,"branches",arrayNew(1))>
+			<cfset querySetCell(qGetQuestions,"branches",getBranches(qGetQuestions.id),1)>
+		</cfif>
+
 		<cfreturn qGetQuestions>
 			
 	</cffunction>

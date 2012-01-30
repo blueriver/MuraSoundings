@@ -13,13 +13,11 @@
 
 	<cffunction name="init" access="public" returnType="user" output="false"
 				hint="Returns an instance of the CFC initialized with the correct DSN.">
-		<cfargument name="dsn" type="string" required="true" hint="DSN used for all operations in the CFC.">
-		<cfargument name="dbtype" type="string" required="true" hint="Database type.">
-		<cfargument name="tableprefix" type="string" required="true" hint="Table prefix.">
+		<cfargument name="settings" type="struct" required="true" >
 		
-		<cfset variables.dsn = arguments.dsn>
-		<cfset variables.dbtype = arguments.dbtype>
-		<cfset variables.tableprefix = arguments.tableprefix>
+		<cfset variables.dsn = arguments.settings.dsn>
+		<cfset variables.dbtype = arguments.settings.dbtype>
+		<cfset variables.tableprefix = arguments.settings.tableprefix>
 		<cfset variables.lockname = "soundings_20_userlock">		
 		<cfreturn this>
 		

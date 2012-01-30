@@ -8,4 +8,5 @@ DROP TABLE IF EXISTS `sp#variables.config.getPluginID()#_survey_results`;
 DROP TABLE IF EXISTS `sp#variables.config.getPluginID()#_surveys`;
 DROP TABLE IF EXISTS `sp#variables.config.getPluginID()#_templates`;
 DROP TABLE IF EXISTS `sp#variables.config.getPluginID()#_users`;
+DROP TABLE IF EXISTS `sp#variables.config.getPluginID()#_questionbranches`;
 </cfoutput>

@@ -29,11 +29,11 @@
 	<cfset pApp.getValue("settings").tableprefix = "sp" & request.pluginConfig.getPluginID() & "_">
 	<!--- --->
 		
-	<cfset pApp.setValue("survey",createObject("component","cfcs.surveyProxy").init(pApp.getValue("settings").dsn,pApp.getValue("settings").dbtype,pApp.getValue("settings").tableprefix))>
-	<cfset pApp.setValue("question",createObject("component","cfcs.question").init(pApp.getValue("settings").dsn,pApp.getValue("settings").dbtype,pApp.getValue("settings").tableprefix))>
-	<cfset pApp.setValue("questiontype",createObject("component","cfcs.questiontype").init(pApp.getValue("settings").dsn,pApp.getValue("settings").dbtype,pApp.getValue("settings").tableprefix))>
-	<cfset pApp.setValue("template",createObject("component","cfcs.template").init(pApp.getValue("settings").dsn,pApp.getValue("settings").dbtype,pApp.getValue("settings").tableprefix))>
-	<cfset pApp.setValue("user",createObject("component","cfcs.user").init(pApp.getValue("settings").dsn,pApp.getValue("settings").dbtype,pApp.getValue("settings").tableprefix))>
+	<cfset pApp.setValue("survey",createObject("component","cfcs.surveyProxy").init(pApp.getValue("settings")))>
+	<cfset pApp.setValue("question",createObject("component","cfcs.question").init(pApp.getValue("settings")))>
+	<cfset pApp.setValue("questiontype",createObject("component","cfcs.questiontype").init(pApp.getValue("settings")))>
+	<cfset pApp.setValue("template",createObject("component","cfcs.template").init(pApp.getValue("settings")))>
+	<cfset pApp.setValue("user",createObject("component","cfcs.user").init(pApp.getValue("settings")))>
 	<cfset pApp.setValue("utils",createObject("component","cfcs.utils"))>
 	<cfset pApp.setValue("toxml",createObject("component","cfcs.toxml"))>
 	

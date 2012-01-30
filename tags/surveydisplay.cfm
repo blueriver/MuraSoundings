@@ -15,16 +15,17 @@
 <cfset surveyComplete = false>
 
 <!--- Initialize in session scope if it doesn't exist --->
-<cfif not structKeyExists(request.pSession,"surveys")>
+<cfif not structKeyExists(session,"surveys")>
 	<cfset request.pSession.surveys = structNew()>
 </cfif>
 
 <!--- Initialize certain values in the session struct --->
 <cfif not structKeyExists(request.pSession.surveys,attributes.survey.id)>
-	<cfset request.pSession.surveys[attributes.survey.id] = structNew()>
-	<cfset request.pSession.surveys[attributes.survey.id].currentStep = 1>
-	<cfset request.pSession.surveys[attributes.survey.id].answers = structNew()>
-	<cfset request.pSession.surveys[attributes.survey.id].maxQuestions = request.pApp.question.getQuestions(attributes.survey.id).recordCount>
+	<cfset request.pSession.surveys[attributes.survey.id]  = structNew()>
+	<cfset request.pSession.surveys[attributes.survey.id] .currentStep = 1>
+	<cfset request.pSession.surveys[attributes.survey.id] .answers = structNew()>
+	<cfset request.pSession.surveys[attributes.survey.id] .maxQuestions = request.pApp.question.getQuestions(attributes.survey.id).recordCount>
+	<cfset request.pSession.surveys[attributes.survey.id] .toskip = structNew()>
 </cfif>
 
 <!--- First see if survey is protected --->
@@ -47,12 +48,12 @@
 	<cfabort>
 </cfif>
 <!--- Is it protected by password? --->
-<cfif len(attributes.survey.surveypassword) and not structKeyExists(request.pSession.surveys[attributes.survey.id],"auth")>
+<cfif len(attributes.survey.surveypassword) and not structKeyExists(request.pSession.surveys[attributes.survey.id] ,"auth")>
 	<cfset showForm = true>
 	<cfset showError = false>
 	<cfif isDefined("form.password")>
 		<cfif form.password eq attributes.survey.surveypassword>
-			<cfset request.pSession.surveys[attributes.survey.id].auth = true>
+			<cfset request.pSession.surveys[attributes.survey.id] .auth = true>
 			<cfset showForm = false>
 		<cfelse>
 			<cfset showError = true>
@@ -65,7 +66,7 @@
 		<div class="surveyMessages">In order to use this survey, you must enter a password. This password should have been
 		sent to you with your survey invitation.</div>
 		<cfif showError></p><p><b>Sorry, but the password you entered is not correct.</b></cfif>
-		<form action="#cgi.script_name#?#cgi.query_string#" method="post">
+		<form action="./?#cgi.query_string#" method="post">
 		<input type="password" name="password"> <input type="submit" value="Enter Password">
 		</form>
 		</p>
@@ -74,7 +75,7 @@
 	</cfif>
 </cfif>
 <!--- Is it protected by an email list? --->
-<cfif len(attributes.survey.emaillist) and not structKeyExists(request.pSession.surveys[attributes.survey.id],"auth")>
+<cfif len(attributes.survey.emaillist) and not structKeyExists(request.pSession.surveys[attributes.survey.id] ,"auth")>
 	<cfset showForm = true>
 	<cfset showError = false>
 	<cfset showDone = false>
@@ -83,8 +84,8 @@
 			<cfif request.pApp.survey.surveyCompletedBy(attributes.survey.id,form.email)>
 				<cfset showDone = true>
 			<cfelse>
-				<cfset request.pSession.surveys[attributes.survey.id].auth = true>
-				<cfset request.pSession.surveys[attributes.survey.id].owner = form.email>
+				<cfset request.pSession.surveys[attributes.survey.id] .auth = true>
+				<cfset request.pSession.surveys[attributes.survey.id] .owner = form.email>
 				<cfset showForm = false>
 			</cfif>
 		<cfelse>
@@ -110,7 +111,7 @@
 </cfif>
 
 <!--- Get a pointer to current session info on the survey --->
-<cfset currentInfo = request.pSession.surveys[attributes.survey.id]>
+<cfset currentInfo = request.pSession.surveys[attributes.survey.id] >
 
 <!--- how many per page? --->
 <cfif isNumeric(attributes.survey.questionsperpage)>
@@ -133,10 +134,10 @@
 <!--- They finished the survey --->
 <cfif firstOnPage gt currentInfo.maxQuestions>
 	<cfset extra = structNew()>
-	<cfif structKeyExists(request.pSession.surveys[attributes.survey.id],"owner")>
-		<cfset extra.owner = request.pSession.surveys[attributes.survey.id].owner>
+	<cfif structKeyExists(request.pSession.surveys[attributes.survey.id] ,"owner")>
+		<cfset extra.owner = request.pSession.surveys[attributes.survey.id] .owner>
 	</cfif>		
-	<cf_surveycomplete survey="#attributes.survey#" data="#request.pSession.surveys[attributes.survey.id]#" attributeCollection="#extra#"/>
+	<cf_surveycomplete survey="#attributes.survey#" data="#request.pSession.surveys[attributes.survey.id] #" attributeCollection="#extra#"/>
 	<cfset structDelete(request.pSession.surveys,attributes.survey.id)>
 	<cfset surveyComplete = true>
 </cfif>
@@ -146,6 +147,19 @@
 	<cfif currentInfo.currentStep gte 2>
 		<cfset currentInfo.currentStep = currentInfo.currentStep - 1>
 		
+		<!--- 
+		We need to check for skipped questions. It's possible when we answer
+		question X, we were told to skip ahead N questions. If we were, then
+		currentStep is marked as skipped. So I will subtract one and check again.
+		I eventually end up where I'm allowed to be. 
+
+		Note that we also auto remove them.
+		--->
+		<cfloop condition="structKeyExists(currentInfo.toskip, currentinfo.currentstep)">
+			<cfset structDelete(currentInfo.toSkip, currentInfo.currentStep)>
+			<cfset currentInfo.currentStep = currentInfo.currentStep - 1>
+		</cfloop>
+
 		<!---
 		This is a direct cut and paste of the logic below, minus all done check. Idea is when
 		you hit previous we still want to store your answers, but we ignore errors. 
@@ -178,6 +192,7 @@
 	</cfif>
 </cfif>
 
+
 <cfif not surveyComplete>
 	<cfoutput>
 	<div class="surveyName">#attributes.survey.name#</div>
@@ -197,6 +212,7 @@
 <cfif not surveyComplete>
 
 	<cfset allDone = true>
+
 	<cfoutput>
 	<form action="./?#cgi.query_string#" method="post">
 	</cfoutput>
@@ -253,12 +269,64 @@
 	We can't rely on that. So I'll be updating deleteQuestion to correctly reset ranks.
 	--->
 	<cfif allDone>
-	
-		<cfif lastQuestion.nextQuestion neq "">
+		<cfif lastQuestion.branches[1].recordCount>
+			<cfset branches = lastQuestion.branches[1]>
+			<cfset setTarget = false>
+			<cfloop query="branches">
+
+				<cfif nextQuestionValue eq "">
+					<!--- In this branch, we ALWAYS go to another q --->
+					<cfset questionToLoad = request.pApp.question.getQuestion(nextQuestion)>
+					<!--- remember we are skipping some --->
+					<cfset fromSkip = currentInfo.currentStep + 1>
+					<cfset toSkip = questionToLoad.rank-1>
+					<cfloop index="x" from="#fromSkip#" to="#toSkip#">
+						<cfset currentInfo.toSkip[fromSkip] = 1>
+					</cfloop>
+					<cfset currentInfo.currentStep = questionToLoad.rank>
+					<cfset setTarget = true>
+				<cfelse>
+					<cfset answer = currentInfo.answers[lastQuestion.id]>
+					<cfset theanswermatches = false>
+					<!--- first do a simple check - assumes answer is simple --->
+					<cfif isSimpleValue(answer) and answer is lastQuestion.nextQuestionValue>
+						<cfset theAnswerMatches = true>
+					</cfif>
+					<!--- next support our MC with a .list key --->
+					<cfif isStruct(answer) and structKeyExists(answer,"list") and listFind(answer.list, nextQuestionValue)>
+						<cfset theAnswerMatches = true>
+					</cfif>	
+					<cfif theanswermatches>
+						<cfset questionToLoad = request.pApp.question.getQuestion(nextQuestion)>
+						<cfset fromSkip = currentInfo.currentStep + 1>
+						<cfset toSkip = questionToLoad.rank-1>
+						<cfloop index="x" from="#fromSkip#" to="#toSkip#">
+							<cfset currentInfo.toSkip[fromSkip] = 1>
+						</cfloop>
+						<cfset currentInfo.currentStep = questionToLoad.rank>
+						<cfset setTarget = true>
+					</cfif>
+				</cfif>
+				<cfif setTarget>
+					<cfbreak>
+				</cfif>
+			</cfloop>
+
+			<cfif not setTarget>
+				<cfset currentInfo.currentStep = currentInfo.currentStep + 1>
+			</cfif>
+
+			<!---
 			<!--- Ok, we definitely need to go someplace else. But do we have to have an answer? --->		
 			<cfif lastQuestion.nextQuestionValue eq "">
 				<!--- In this branch, we ALWAYS go to another q --->
 				<cfset questionToLoad = request.pApp.question.getQuestion(lastQuestion.nextQuestion)>
+				<!--- remember we are skipping some --->
+				<cfset fromSkip = currentInfo.currentStep + 1>
+				<cfset toSkip = questionToLoad.rank-1>
+				<cfloop index="x" from="#fromSkip#" to="#toSkip#">
+					<cfset currentInfo.toSkip[fromSkip] = 1>
+				</cfloop>
 				<cfset currentInfo.currentStep = questionToLoad.rank>
 			<cfelse>
 				<cfset answer = currentInfo.answers[lastQuestion.id]>
@@ -273,11 +341,17 @@
 				</cfif>	
 				<cfif theanswermatches>
 					<cfset questionToLoad = request.pApp.question.getQuestion(lastQuestion.nextQuestion)>
+					<cfset fromSkip = currentInfo.currentStep + 1>
+					<cfset toSkip = questionToLoad.rank-1>
+					<cfloop index="x" from="#fromSkip#" to="#toSkip#">
+						<cfset currentInfo.toSkip[fromSkip] = 1>
+					</cfloop>
 					<cfset currentInfo.currentStep = questionToLoad.rank>
 				<cfelse>
 					<cfset currentInfo.currentStep = currentInfo.currentStep + 1>
 				</cfif>
 			</cfif>
+			--->
 		<cfelse>
 			<cfset currentInfo.currentStep = currentInfo.currentStep + 1>
 		</cfif>
@@ -288,15 +362,11 @@
 
 	<cfif len(attributes.survey.thankYouMsg)>
 		<cfoutput>
-		<p>
-		<div class="surveyDone">#attributes.survey.thankYouMsg#</div>
-		</p>
+		<div class="surveyDone"><p>#attributes.survey.thankYouMsg#</p></div>
 		</cfoutput>
 	<cfelse>
 		<cfoutput>
-		<p>
-		<div class="surveyDone">Thank you for finishing the survey.</div>
-		</p>
+		<div class="surveyDone"><p>Thank you for finishing the survey.</p></div>
 		</cfoutput>
 	</cfif>
 	

@@ -108,15 +108,17 @@
 	<cfif not len(errors)>
 		<cftry>
 
-			<cfinclude template="../nextquestionlogic.cfm">
 
 			<cfif not isDefined("attributes.question")>
-				<cfset qid = request.pApp.question.addQuestion(question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questionType.id,answers=answers,argumentcollection=extra)>
+				<cfset qid = request.pApp.question.addQuestion(question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questionType.id,answers=answers)>
 				<!--- found a bug where if you savedandaddmore on a new q, then the ID didnt exist (duh) --->
 			<cfelse>
-				<cfset request.pApp.question.updateQuestion(id=attributes.question.id,question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questiontype.id,answers=answers,argumentcollection=extra)>
+				<cfset request.pApp.question.updateQuestion(id=attributes.question.id,question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questiontype.id,answers=answers)>
 				<cfset qid = attributes.question.id>
 			</cfif>
+
+			<cfinclude template="../nextquestionlogic.cfm">
+
 			<cfset msg = "Your question has been saved.">
 
 			<!--- If we simply 'save' then we go back to the survey questions --->
@@ -128,7 +130,7 @@
 			</cfif>
 
 
-			<cfcatch><cfdump var="#cfcatch#">
+			<cfcatch>
 				<cfset errors = cfcatch.message>
 			</cfcatch>
 		</cftry>
@@ -199,7 +201,7 @@ question. You must have at least two choices.
 		<td>&nbsp;</td>
 		<td>
 			<input type="submit" name="save" value="Save">
-			<input type="submit" name="saveaddmore" value="Save and add more questions">
+			<input type="submit" name="saveaddmore" value="Save and add more answers">
 			<input type="submit" name="cancel" value="Cancel">
 		</td>
 	</tr>

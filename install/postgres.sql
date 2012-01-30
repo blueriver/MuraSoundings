@@ -19,7 +19,7 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
-DROP TABLE IF EXISTS answers, questions, questiontypes, results, survey_emailaddresses, survey_results, surveys, templates, users
+DROP TABLE IF EXISTS answers, questionbranches, questions, questiontypes, results, survey_emailaddresses, survey_results, surveys, templates, users
 
 CREATE TABLE answers (
     id character varying(35) NOT NULL,
@@ -29,15 +29,20 @@ CREATE TABLE answers (
 );
 
 
+CREATE TABLE questionbranches (
+    id character varying(35) NOT NULL,
+    questionidfk character varying(35) NOT NULL,
+    nextquestion character varying(35) NOT NULL,
+    nextquestionvalue character varying(255) NOT NULL
+);
+
 CREATE TABLE questions (
     id character varying(35) NOT NULL,
     surveyidfk character varying(35) NOT NULL,
     question character varying(255) NOT NULL,
     questiontypeidfk character varying(35) NOT NULL,
     rank integer DEFAULT 1 NOT NULL,
-    required boolean DEFAULT false NOT NULL,
-    nextquestion varying(35) NULL,
-    nextquestionvalue varying(255) NULL
+    required boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE questiontypes (

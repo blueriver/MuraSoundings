@@ -11,6 +11,16 @@ CREATE TABLE `answers` (
 -- Table structure for table `questions`
 --
 
+DROP TABLE IF EXISTS `questionbranches`;
+CREATE TABLE questionbranches  ( 
+	id               	varchar(35) NOT NULL,
+	questionidfk     	varchar(35) NOT NULL,
+	nextquestion     	varchar(35) NOT NULL,
+	nextquestionvalue	varchar(255) NOT NULL,
+	rank             	int(11) NOT NULL,
+	PRIMARY KEY(id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `questions`;
 CREATE TABLE `questions` (
   `id` varchar(35) NOT NULL,
@@ -90,6 +100,7 @@ CREATE TABLE `surveys` (
   `templateidfk` varchar(35) default NULL,
   `allowembed` tinyint(4) default NULL,
   `showinpubliclist` tinyint(4) default NULL,
+  `questionsperpage`	int(11) NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -120,8 +131,6 @@ CREATE TABLE `users` (
   PRIMARY KEY  (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `soundings`.`questions` ADD COLUMN `nextquestion` VARCHAR(35) NULL  AFTER `required` , ADD COLUMN `nextquestionvalue` VARCHAR(255) NULL  AFTER `nextquestion` ;
-ALTER TABLE `soundings`.`surveys` ADD COLUMN `questionsperpage` INT NULL  AFTER `showinpubliclist` ;
 
 INSERT INTO questiontypes(id, name, handlerroot)
 VALUES('1EB9DDE1-C9C4-302C-3B98D7C3FEFD49E6', 'Matrix', 'matrix');

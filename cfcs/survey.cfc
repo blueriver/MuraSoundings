@@ -15,18 +15,18 @@
 <cfcomponent displayName="Survey" hint="Handles all survey interactions." output="false">
 
 	<cfset variables.utils = createObject("component","utils")>
-	<cfinvoke component="soundings" method="getSettings" returnVariable="variables.settings">
 
 	<cffunction name="init" access="public" returnType="survey" output="false"
 				hint="Returns an instance of the CFC initialized with the correct DSN.">
-		<cfargument name="dsn" type="string" required="true" hint="DSN used for all operations in the CFC.">
-		<cfargument name="dbtype" type="string" required="true" hint="Database type.">
-		<cfargument name="tableprefix" type="string" required="true" hint="Table prefix.">
+		<cfargument name="settings" type="struct" required="true" >
 		
-		<cfset variables.dsn = arguments.dsn>
-		<cfset variables.dbtype = arguments.dbtype>
-		<cfset variables.tableprefix = arguments.tableprefix>
-		
+		<cfset variables.dsn = arguments.settings.dsn>
+		<cfset variables.dbtype = arguments.settings.dbtype>
+		<cfset variables.tableprefix = arguments.settings.tableprefix>
+
+		<!--- This Line makes the settings available throughout the component life --->
+		<cfset variables.settings = arguments.settings />
+				
 		<cfset variables.answerCache = structNew()>
 		<cfset variables.itemCache = structNew()>
 		<cfset variables.questionCache = structNew()>
@@ -168,7 +168,7 @@
 			
 			<!--- Do we need to mail? --->
 			<cfif len(survey.resultMailTo)>
-				<cfset question = createObject("component","question").init(variables.dsn,variables.dbtype,variables.tableprefix)>
+				<cfset question = createObject("component","question").init(variables.settings)>
 				<cfset questions = 	question.getQuestions(arguments.id)>
 
 		<cfmail to="#survey.resultMailTo#" from="#variables.settings.fromAddress#" subject="Survey Completion: #survey.name#">
@@ -190,7 +190,7 @@ A) #getAnswerResult(questions.id,arguments.ownerid)#
 				hint="Deletes a survey. Also does cleanup on results/questions/answers.">
 		<cfargument name="id" type="uuid" required="true" hint="The UUID of the survey to delete.">
 		<cfargument name="useridfk" type="uuid" required="false">
-		<cfset var question = createObject("component","question").init(variables.dsn,variables.dbtype,variables.tableprefix)>
+		<cfset var question = createObject("component","question").init(variables.settings)>
 		<cfset var questions = 	question.getQuestions(arguments.id)>
 		<cfset var s = "">
 		

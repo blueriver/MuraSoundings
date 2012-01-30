@@ -30,16 +30,17 @@ function IsCFUUID(str) {
 <cfparam name="attributes.single" default="true">
 <cfparam name="attributes.other" default="false">
 
-<cfloop index="answer" list="#attributes.answer.list#">
-	<cfquery datasource="#request.pApp.settings.dsn#">
-		insert into #request.pApp.settings.tableprefix#results(owneridfk,questionidfk,answeridfk)
-		values(
-			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="320" value="#attributes.owner#">,
-			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#attributes.questionidfk#">,
-			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#answer#">
-		)
-	</cfquery>
-</cfloop>
+<cfif isStruct(attributes.answer)>
+	<cfloop index="answeritem" list="#attributes.answer.list#">
+		<cfquery datasource="#request.pApp.settings.dsn#">
+			insert into #request.pApp.settings.tableprefix#results(owneridfk,questionidfk,answeridfk)
+			values(
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="320" value="#attributes.owner#">,
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#attributes.questionidfk#">,
+				<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#answeritem#">
+			)
+		</cfquery>
+	</cfloop>
 <cfif structKeyExists(attributes.answer, "other")>
 	<cfquery datasource="#request.pApp.settings.dsn#">
 		insert into #request.pApp.settings.tableprefix#results(owneridfk,questionidfk,other)
@@ -50,6 +51,7 @@ function IsCFUUID(str) {
 		)
 	</cfquery>
 </cfif>				
+</cfif>
 <cfsetting enablecfoutputonly=false>
 
 <cfexit method="exittag">

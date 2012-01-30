@@ -198,15 +198,16 @@
 				<cfset tempItem.rank = -1 * tempItem.rank>
 				<cfset arrayAppend(answers, tempItem)>
 			</cfloop>
-
-			<cfinclude template="../nextquestionlogic.cfm">
 			
 			<cfif not isDefined("attributes.question")>
-				<cfset qid = request.pApp.question.addQuestion(question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questionType.id,answers=answers,argumentcollection=extra)>
+				<cfset qid = request.pApp.question.addQuestion(question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questionType.id,answers=answers)>
 			<cfelse>
-				<cfset request.pApp.question.updateQuestion(id=attributes.question.id,question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questiontype.id,answers=answers,argumentcollection=extra)>
+				<cfset request.pApp.question.updateQuestion(id=attributes.question.id,question=form.question,rank=form.rank,required=form.required,surveyidfk=attributes.surveyidfk,questiontypeidfk=attributes.questiontype.id,answers=answers)>
 				<cfset qid = attributes.question.id>
 			</cfif>
+
+			<cfinclude template="../nextquestionlogic.cfm">
+
 			<cfset msg = "Your question has been saved.">
 			<cflocation url="questions.cfm?surveyidfk=#attributes.surveyidfk#&msg=#urlEncodedFormat(msg)#" addToken="false">
 			<cfcatch>

@@ -16,6 +16,50 @@ wishlist: http://www.amazon.com/o/registry/2TCL1D08EZEYE
 
 
 ========================================= CURRENT UPDATES =========================================
+Last Update: January 19, 2012 (Version 4.2)
+
+/cfcs/settings.xml.cfm - Just the version
+/handlers/* - multiple updates to fix bugs 62 and 63
+/import/mysql.sql - fixes
+
+All fixes credit to Jens Herden
+
+========================================= ARCHIVED UPDATES =========================================
+Last Update: November 21, 2011 (Version 4.1)
+
+A major update to branching has been added. You can now do multiple
+'logic' thingies based on question responses. Unfortunately, any older
+survey that used this logic will not be supported. Simply go to your survey
+and update it with your logic.
+
+Note - nextquestion and nextquestionvalue have been removed from the questions
+table and questionbranches has been added as a table.
+
+As for the files, I'd recommend copying everything ever.
+
+
+Last Update: November 21, 2011 (Version 4.004)
+/cfcs/settings.xml.cfm - version #
+/handlers/matrix/save.cfm - bug if question was skipped,thx to Michael Forell
+/cfcs/survey.cfc - fix a bug when deleting surveys
+
+Last Update: November, 2011 (Version 4.003)
+/cfcs/settings.xml.cfm - version #
+/tags/surveydisplay.cfm - Should fix the issue with Previous sending you
+to a question you would have skipped.
+/handlers/nextquestion.cfm - remove console.log
+/cfcs/*.cfc, /Application.cfc - Kevin Penny sent in changes to how the CFCs are inited - makes em a bit simpler.
+
+Last Update: July 25, 2011 (Version 4.002)
+/install/mysql.sql - added questionsperpage to the survey table. The code
+was done earlier - just forgot to update the sql file.
+/cfcs/settings.xml.cfm - version #
+
+
+Last Update: July 25, 2011 (Version 4.001)
+/cfcs/question.cfc - fixes a bug with duplicating surveys
+/cfcs/settings.xml.cfm - version #
+
 Last Update: May 24, 2011 (Version 4)
 Official release. Enjoy the silence.
 
@@ -24,15 +68,14 @@ Note that almost every file has changed.
 Note that the docs are not updated.
 Note that the databases are not updated.
 Use this script in MySQL:
-ALTER TABLE `soundings`.`questions` ADD COLUMN `nextquestion` VARCHAR(35) NULL  AFTER `required` , ADD COLUMN `nextquestionvalue` VARCHAR(255) NULL  AFTER `nextquestion` ;ALTER TABLE `soundings`.`surveys` ADD COLUMN `questionsperpage` INT NULL  AFTER `showinpubliclist` ;
+ALTER TABLE `soundings`.`questions` ADD COLUMN `nextquestion` VARCHAR(35) NULL  AFTER `required` , ADD COLUMN `nextquestionvalue` VARCHAR(255) NULL  AFTER `nextquestion` ;
+ALTER TABLE `soundings`.`surveys` ADD COLUMN `questionsperpage` INT NULL  AFTER `showinpubliclist` ;
 
 Maily this update:
 Allows for question branching based on conditional logic.
 Adds preview ability of questions in admin.
 Fixes many small bugs, including a survey editing suggestion by Jared Raddigan.
 
-
-========================================= ARCHIVED UPDATES =========================================
 Last Update: February 8, 2011 (Version 3.012)
 Linda Liebermann found a few bugs with templates, this is corrected in admin\template_edit.cfm
 

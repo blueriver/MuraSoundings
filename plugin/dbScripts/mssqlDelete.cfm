@@ -8,4 +8,5 @@ DROP TABLE [dbo].[sp#variables.config.getPluginID()#_survey_results]
 DROP TABLE [dbo].[sp#variables.config.getPluginID()#_surveys]
 DROP TABLE [dbo].[sp#variables.config.getPluginID()#_templates]
 DROP TABLE [dbo].[sp#variables.config.getPluginID()#_users]
+DROP TABLE [dbo].[sp#variables.config.getPluginID()#_questionbranches]
 </cfoutput>
