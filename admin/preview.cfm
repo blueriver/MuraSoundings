@@ -8,7 +8,7 @@
 	<cfabort/>
 </cfif>
 <cfset data = deserializeJSON(form.data)>
-<cfset qt =  request.pApp.questionType.getQuestionType(form.questionType)>
+<cfset qt = request.pApp.questionType.getQuestionType(form.questionType)>
 
 <cfmodule template="../handlers/#qt.handlerRoot#/preview.cfm" 
 	data="#data#" />

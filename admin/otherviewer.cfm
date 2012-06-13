@@ -15,8 +15,8 @@
 <cfparam name="url.earliestdate" default="">
 <cfparam name="url.latestdate" default="">
 
-<cfset question =  request.pApp.question.getQuestion(url.questionidfk)>
-<cfset qt =  request.pApp.questiontype.getQuestionType(question.questiontypeidfk)>
+<cfset question = request.pApp.question.getQuestion(url.questionidfk)>
+<cfset qt = request.pApp.questiontype.getQuestionType(question.questiontypeidfk)>
 
 <cfmodule template="../handlers/#qt.handlerRoot#/stats.cfm" 
 			questionidfk="#url.questionidfk#"

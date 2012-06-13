@@ -18,7 +18,7 @@
 		values(
 			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="320" value="#attributes.owner#">,
 			<cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#attributes.questionidfk#">,
-			<cfqueryparam cfsqltype="#application.utils.getQueryParamType(request.pApp.settings.dbtype,"CF_SQL_BIT")#" value="#attributes.answer#">
+			<cfqueryparam cfsqltype="#request.pApp.utils.getQueryParamType(request.pApp.settings.dbtype,"CF_SQL_BIT")#" value="#attributes.answer#">
 		)
 	</cfquery>
 </cfif>

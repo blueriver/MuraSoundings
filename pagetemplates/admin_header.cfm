@@ -21,7 +21,7 @@
 	</cfif>
 	<script src="../includes/jquery-1.5.2.min.js"></script>
 	<script src="../includes/jquery.json-2.2.min.js"></script>
-	#application.pluginManager.renderAdminToolBar(jsLib="jquery",jsLibLoaded=true)#
+  #application.pluginManager.renderAdminToolBar(jsLib="jquery",jsLibLoaded=true)#
 </head>
 
 <body onload="MM_preloadImages('../images/menu1Hot.gif','../images/menu2Hot.gif','../images/menu3Hot.gif','../images/menu4Hot.gif')">

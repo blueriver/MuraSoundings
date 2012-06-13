@@ -22,7 +22,7 @@
 				<cfset request.pApp.user.addUser(argumentCollection=data)>
 			</cfif>
 			
-			<cfset request.pSession.user = request.pApp.user.getUser(userBean.getUsername())>
+			<cfset request.prequest.pSession.user = request.pApp.user.getUser(userBean.getUsername())>
 			<cfset request.pSession.loggedin = true>
 		</cfif>
 
@@ -31,4 +31,3 @@
 	
 
 </cfcomponent>
-

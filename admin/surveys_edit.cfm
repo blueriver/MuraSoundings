@@ -52,7 +52,7 @@
 			<cfset errors = errors & "A new survey cannot be active. You must first add questions.<br>">
 		<cfelse>
 			<!--- get questions --->
-			<cfset q =  request.pApp.question.getQuestions(url.id)>
+			<cfset q = request.pApp.question.getQuestions(url.id)>
 			<cfif q.recordCount is 0>
 				<cfset errors = errors & "This survey cannot be marked active until questions are added.<br>">
 			</cfif>
@@ -61,7 +61,7 @@
 	
 	<!--- Nuke the old list --->	
 	<cfif isDefined("form.nukeEL")>
-		<cfset  request.pApp.survey.resetEmailList(url.id)>
+		<cfset request.pApp.survey.resetEmailList(url.id)>
 	</cfif>
 		
 	<cfif not len(errors)>
@@ -89,10 +89,10 @@
 			
 		<cfif url.id neq 0>
 			<cfset data.id = url.id>
-			<cfset  request.pApp.survey.updateSurvey(argumentCollection=data)>
+			<cfset request.pApp.survey.updateSurvey(argumentCollection=data)>
 		<cfelse>
 			<cfset data.useridfk = request.pSession.user.id>
-			<cfset url.id =  request.pApp.survey.addSurvey(argumentCollection=data)>		
+			<cfset url.id = request.pApp.survey.addSurvey(argumentCollection=data)>		
 		</cfif>
 		
 		<cfif len(trim(form.emailList))>
@@ -106,9 +106,9 @@
 					<cfset arrayAppend(emails, trim(line))>
 				</cfif>
 			</cfloop>
-			<cfset  request.pApp.survey.resetEmailList(url.id)>
+			<cfset request.pApp.survey.resetEmailList(url.id)>
 			<cfif arrayLen(emails)>
-				<cfset  request.pApp.survey.addEmailList(url.id,emails)>
+				<cfset request.pApp.survey.addEmailList(url.id,emails)>
 			</cfif>
 			<!--- cleanup --->
 			<cffile action="delete" file="#theFile#">
@@ -120,13 +120,13 @@
 </cfif>
 
 <cfif isDefined("form.dupe") and url.id neq 0>
-	<cfset  request.pApp.survey.duplicateSurvey(url.id)>
+	<cfset request.pApp.survey.duplicateSurvey(url.id)>
 	<cfset msg = "Survey, #form.name#, has been duplicated.">
 	<cflocation url="surveys.cfm?msg=#urlEncodedFormat(msg)#">
 </cfif>
 
 <cfif isDefined("form.clear") and url.id neq 0>
-	<cfset  request.pApp.survey.clearResults(url.id)>
+	<cfset request.pApp.survey.clearResults(url.id)>
 	<cfset msg = "Survey, #form.name#, has had its results cleared.">
 	<cflocation url="surveys.cfm?msg=#urlEncodedFormat(msg)#">
 </cfif>
@@ -134,13 +134,13 @@
 <!--- get survey if not new --->
 <cfif url.id neq 0>
 	<cfif not request.pSession.user.isAdmin>
-		<cfset survey =  request.pApp.survey.getSurvey(url.id, request.pSession.user.id)>
+		<cfset survey = request.pApp.survey.getSurvey(url.id, request.pSession.user.id)>
 	<cfelse>
-		<cfset survey =  request.pApp.survey.getSurvey(url.id)>
+		<cfset survey = request.pApp.survey.getSurvey(url.id)>
 	</cfif>
 	<!--- get the templates based on the survey owner, which may not be me if I'm a admin --->
-	<cfset templates =  request.pApp.template.getTemplates(survey.useridfk)>
-	<cfset emailList =  request.pApp.survey.getEmailList(url.id)>
+	<cfset templates = request.pApp.template.getTemplates(survey.useridfk)>
+	<cfset emailList = request.pApp.survey.getEmailList(url.id)>
 	<cfparam name="form.name" default="#survey.name#">
 	<cfparam name="form.description" default="#survey.description#">
 	<cfparam name="form.active" default="#survey.active#">
@@ -166,7 +166,7 @@
 	<cfparam name="form.allowembed" default="">
 	<cfparam name="form.showinpubliclist" default="">
 	<cfparam name="form.questionsperpage" default="">
-	<cfset templates =  request.pApp.template.getTemplates(request.pSession.user.id)>
+	<cfset templates = request.pApp.template.getTemplates(request.pSession.user.id)>
 </cfif>
 
 <tags:layout templatename="admin" title="Survey Editor">
@@ -331,7 +331,7 @@ is set, then it must be provided before the user can take the survey.
 	<tr valign="top">
 		<td><b>Questions Per Page:</b></td>
 		<td><input type="text" name="questionsperpage" value="#form.questionsperpage#"><br/>
-		If blank, defaults to # request.pApp.settings.perpage#. <b>Notice:</b> If your survey
+		If blank, defaults to #request.pApp.settings.perpage#. <b>Notice:</b> If your survey
 		makes use of <i>any</i> post-question conditionals, you must set this value to 1 or
 		the survey will not work correctly.
 		</td>

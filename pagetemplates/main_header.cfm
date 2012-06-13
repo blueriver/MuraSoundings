@@ -9,7 +9,20 @@
 --->
 
 <cfoutput>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+
+<html>
+<head>
+	<title>#attributes.title#</title>
+	<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+</head>
+
+<body>
+
 <div id="container">
+	<div id="menu"><a href="index.cfm">Soundings</a><hr color="black" size="1" /></div>
 </cfoutput>
 
 <cfsetting enablecfoutputonly=true>

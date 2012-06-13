@@ -58,7 +58,7 @@
 	<!--- are we trying to logon? --->
 	<cfif isDefined("form.username") and isDefined("form.password")>
 		<cfif request.pApp.user.authenticate(form.username,form.password)>
-			<cfset request.pSession.user = request.pApp.user.getUser(form.username)>
+			<cfset request.prequest.pSession.user = request.pApp.user.getUser(form.username)>
 			<cfset request.pSession.loggedin = true>
 		</cfif>
 	</cfif>

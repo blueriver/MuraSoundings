@@ -13,13 +13,13 @@
 </cfif>
 
 <cftry>
-	<cfset survey =  request.pApp.survey.getSurvey(url.id)>
+	<cfset survey = request.pApp.survey.getSurvey(url.id)>
 	<cfcatch>
 		<cfabort>
 	</cfcatch>
 </cftry>
 
-<cfset list =  request.pApp.survey.getEmailList(url.id)>
+<cfset list = request.pApp.survey.getEmailList(url.id)>
 
 <cfmodule template="../tags/layout.cfm" templatename="plain" title="Email Restriction List">
 

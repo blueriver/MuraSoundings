@@ -38,9 +38,9 @@ function validHandlerRoot(s) {
 	<cfif not len(errors)>
 
 		<cfif url.id neq 0>
-			<cfset  request.pApp.questionType.updateQuestionType(url.id, form.name, form.handlerRoot)>
+			<cfset request.pApp.questionType.updateQuestionType(url.id, form.name, form.handlerRoot)>
 		<cfelse>
-			<cfset  request.pApp.questionType.addQuestionType(form.name, form.handlerRoot)>
+			<cfset request.pApp.questionType.addQuestionType(form.name, form.handlerRoot)>
 		</cfif>
 				
 		<cfset msg = "QuestionType, #form.name#, has been updated.">
@@ -50,7 +50,7 @@ function validHandlerRoot(s) {
 
 <!--- get questionType if not new --->
 <cfif url.id gte 1>
-	<cfset qt =  request.pApp.questionType.getQuestionType(url.id)>
+	<cfset qt = request.pApp.questionType.getQuestionType(url.id)>
 	<cfparam name="form.name" default="#qt.name#">
 	<cfparam name="form.handlerRoot" default="#qt.handlerRoot#">
 <cfelse>

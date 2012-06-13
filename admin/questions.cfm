@@ -19,7 +19,7 @@
 	<!--- handle deletions --->
 	<cfif isDefined("form.mark") and len(form.mark)>
 		<cfloop index="id" list="#form.mark#">
-			<cfset  request.pApp.question.deleteQuestion(id)>
+			<cfset request.pApp.question.deleteQuestion(id)>
 		</cfloop>
 		<cfoutput>
 		<p>
@@ -30,9 +30,9 @@
 	
 	<!--- get surveys --->
 	<cfif not request.pSession.user.isAdmin>
-		<cfset surveys =  request.pApp.survey.getSurveys(useridfk=request.pSession.user.id)>
+		<cfset surveys = request.pApp.survey.getSurveys(useridfk=request.pSession.user.id)>
 	<cfelse>
-		<cfset surveys =  request.pApp.survey.getSurveys()>
+		<cfset surveys = request.pApp.survey.getSurveys()>
 	</cfif>
 
 	<cfoutput>
@@ -54,7 +54,7 @@
 	</cfoutput>
 	
 	<cfif form.surveyidfk neq "">
-		<cfset questions =  request.pApp.question.getQuestions(form.surveyidfk)>		
+		<cfset questions = request.pApp.question.getQuestions(form.surveyidfk)>		
 
 		<tags:datatable data="#questions#" list="question,questiontype,rank" editlink="questions_edit.cfm" linkcol="question" label="Question" queryString="surveyidfk=#form.surveyidfk#">
 			<tags:datacol colname="question" label="Question" width="400" />	

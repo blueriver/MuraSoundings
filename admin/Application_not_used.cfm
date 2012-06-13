@@ -1,6 +1,6 @@
 <cfsetting enablecfoutputonly=true>
 <!---
-	Name         :  request.pApp.cfm
+	Name         : Application.cfm
 	Author       : Raymond Camden 
 	Created      : September 2, 2004
 	Last Updated : September 2, 2004
@@ -9,7 +9,7 @@
 --->
 
 <!--- include root app --->
-<cfinclude template="../ request.pApp.cfm">
+<cfinclude template="../Application.cfm">
 
 <cfif not request.udf.isLoggedOn()>
 	<cfinclude template="login.cfm">

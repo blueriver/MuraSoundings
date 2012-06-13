@@ -37,9 +37,9 @@
 
 	<!--- get surveys --->
 	<cfif not request.pSession.user.isAdmin>
-		<cfset surveys =  request.pApp.survey.getSurveys(useridfk=request.pSession.user.id)>
+		<cfset surveys = request.pApp.survey.getSurveys(useridfk=request.pSession.user.id)>
 	<cfelse>
-		<cfset surveys =  request.pApp.survey.getSurveys()>
+		<cfset surveys = request.pApp.survey.getSurveys()>
 	</cfif>
 
 
@@ -131,11 +131,11 @@
 
 	<!--- get survey security check --->
 	<cfif not request.pSession.user.isAdmin>
-		<cfset survey =  request.pApp.survey.getSurvey(form.surveyidfk, request.pSession.user.id)>
+		<cfset survey = request.pApp.survey.getSurvey(form.surveyidfk, request.pSession.user.id)>
 	</cfif>
 	
 	<!--- handle questions and possible filter --->
-	<cfset questions =  request.pApp.question.getQuestions(form.surveyidfk)>
+	<cfset questions = request.pApp.question.getQuestions(form.surveyidfk)>
 	
 	<cfparam name="url.earliestdate" default="">
 	<cfparam name="url.latestdate" default="">
@@ -162,8 +162,8 @@
 	<cfif form.format is "html">
 	
 		<!--- Begin Stat Display --->
-		<cfset survey =  request.pApp.survey.getSurvey(form.surveyidfk)>
-		<cfset stats =  request.pApp.survey.getStats(form.surveyidfk,form.earliestdate,form.latestdate)>
+		<cfset survey = request.pApp.survey.getSurvey(form.surveyidfk)>
+		<cfset stats = request.pApp.survey.getStats(form.surveyidfk,form.earliestdate,form.latestdate)>
 
 		<cfset title = "Stats for #survey.name#">
 		<cfif isDate(form.earliestdate) or isDate(form.latestdate)>
@@ -290,10 +290,8 @@
 							<cfif cfmx7>
 								<cfinclude template="stats_pie.cfm">
 							<cfelse>
-								<!---<cfchart format="flash" chartWidth="575" chartHeight="575"
-										 rotated="yes" gridLines="#max+1#" show3d="true">--->
-										<cfchart format="flash" chartWidth="575" chartHeight="575"
-										 gridLines="#max+1#" show3d="true">
+								<cfchart format="flash" chartWidth="575" chartHeight="575"
+										 rotated="yes" gridLines="#max+1#" show3d="true">
 									<cfchartseries type="pie" paintStyle="raise" seriesColor="#currentColor#" dataLabelStyle="pattern">
 										<cfchartdata item="#f#" value="#data.false#">						
 										<cfchartdata item="#t#" value="#data.true#">
@@ -304,7 +302,7 @@
 						</cfcase>
 	
 						<cfcase value="multiple choice (single selection),Multiple Choice (Multi Selection) with Other,Multiple Choice (Single Selection) with Other,Multiple Choice (Multi Selection)">
-							<cfset answers =  request.pApp.question.getAnswers(id)>
+							<cfset answers = request.pApp.question.getAnswers(id)>
 	
 							<cfif cfmx7>
 							
@@ -312,10 +310,8 @@
 	
 							<cfelse>						
 	
-								<!---<cfchart format="flash" chartWidth="575" chartHeight="575"
-										 rotated="yes" gridlines="#max+1#" scaleFrom="0">--->
 								<cfchart format="flash" chartWidth="575" chartHeight="575"
-										 gridlines="#max+1#" scaleFrom="0">
+										 rotated="yes" gridlines="#max+1#" scaleFrom="0">
 									<cfchartseries type="bar" paintStyle="raise" seriesColor="#currentColor#">
 										<cfif structKeyExists(data,"other")>
 											<cfchartdata item="Other" value="#data.other#">
@@ -352,14 +348,17 @@
 							<cfset sortedItems = data.sortedItems>
 							<cfset structDelete(data, "sortedItems")>
 							<cfset structDelete(data, "realTotal")>
-							<cfif cfmx7>
+							<!---
+							This was intentionally disabled Apr 11, 2012 due to a bug with the display.
+							I didn't have time to figure it out, so just "and 0"ing it was enough.
+							--->
+							<cfif cfmx7 and 0>
 							
 								<cfinclude template="stats_matrix.cfm">
 								
 							<cfelse>
 	
-								<!---<cfchart format="flash" chartWidth="575" chartHeight="575" rotated="yes" show3d=true showLegend=true>--->
-									<cfchart format="flash" chartWidth="575" chartHeight="575" show3d=true showLegend=true>
+								<cfchart format="flash" chartWidth="575" chartHeight="575" rotated="yes" show3d=true showLegend=true>
 								<cfloop list="#sortedItems#" index="item">
 									<cfset label = data[item].label>							
 										<cfchartseries type="bar" paintStyle="raise" seriesColor="#currentColor#" seriesLabel="#label#">
@@ -420,9 +419,9 @@
 		--->
 				
 		<!--- step one. get all users who responded --->
-		<cfquery name="getSurveyTakers" datasource="# request.pApp.settings.dsn#">
+		<cfquery name="getSurveyTakers" datasource="#request.pApp.settings.dsn#">
 			select	ownerid, completed
-			from	# request.pApp.settings.tableprefix#survey_results
+			from	#request.pApp.settings.tableprefix#survey_results
 			where	surveyidfk = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" maxlength="35" value="#form.surveyidfk#">
 			<cfif isDate(form.earliestdate)>
 			and		completed >= <cfqueryparam cfsqltype="cf_sql_date" value="#form.earliestdate#">
@@ -444,7 +443,7 @@
 			<cfset answerRow = "">
 			<cfset oid = ownerid>
 			<cfloop query="questions">
-				<cfset answerRow = answerRow & "<td>" & htmlEditFormat( request.pApp.survey.getAnswerResult(id,oid)) & "</td>">
+				<cfset answerRow = answerRow & "<td>" & htmlEditFormat(request.pApp.survey.getAnswerResult(id,oid)) & "</td>">
 			</cfloop>
 			
 			<cfoutput><tr><td>#ownerid#</td><td>#dateFormat(completed,"mm/dd/yy")# #timeFormat(completed,"h:mm tt")#</td>#answerRow#</tr></cfoutput>

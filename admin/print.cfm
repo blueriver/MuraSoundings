@@ -13,12 +13,12 @@
 </cfif>
 
 <cfif not request.pSession.user.isAdmin>
-	<cfset survey =  request.pApp.survey.getSurvey(url.id, request.pSession.user.id)>
+	<cfset survey = request.pApp.survey.getSurvey(url.id, request.pSession.user.id)>
 <cfelse>
-	<cfset survey =  request.pApp.survey.getSurvey(url.id)>
+	<cfset survey = request.pApp.survey.getSurvey(url.id)>
 </cfif>
 
-<cfset questions =  request.pApp.question.getQuestions(url.id)>		
+<cfset questions = request.pApp.question.getQuestions(url.id)>		
 
 <cfsavecontent variable="output">
 <cfoutput>
@@ -39,7 +39,7 @@
 </cfoutput>
 
 <cfloop query="questions" endrow="3">
-		<cfset questionob =  request.pApp.question.getQuestions(url.id, currentRow)>		
+		<cfset questionob = request.pApp.question.getQuestions(url.id, currentRow)>		
 
 		<cfmodule template="../handlers/#handlerRoot#/print.cfm" 
 			step="#currentRow#" question="#questionob#" />

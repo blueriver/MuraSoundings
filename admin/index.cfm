@@ -13,7 +13,7 @@
 
 <cfoutput>
 <p>
-Welcome to Soundings # request.pApp.settings.version#. This administrator allows you to edit all aspects of your surveys. Please select an option from the top menu to begin.
+Welcome to Soundings #request.pApp.settings.version#. This administrator allows you to edit all aspects of your surveys. Please select an option from the top menu to begin.
 </p>
 
 <p>

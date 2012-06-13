@@ -57,7 +57,7 @@ $(document).ready(function() {
 
 });
 </script>
-<!---<cfdump var="#attributes.question.branches#">--->
+
 <cfif structKeyExists(attributes, "question")>
 	<cfoutput query="attributes.question.branches">
 	
@@ -80,6 +80,9 @@ $(document).ready(function() {
 			<cfparam name="form.nextquestionvalue_#currentRow#" default="">
 		</cfif>
 		<cfparam name="form.nextquestion_#currentRow#" default="#nextquestion#">
+	<cfelse>
+		<cfset variables["showblock_#currentRow#"] = true>
+		<cfset variables["showanswerblock_#currentRow#"] = true>
 	</cfif>
 	
 	<tr>

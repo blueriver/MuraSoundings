@@ -22,7 +22,7 @@
 	<!--- handle deletions --->
 	<cfif isDefined("form.mark") and len(form.mark)>
 		<cfloop index="id" list="#form.mark#">
-			<cfset  request.pApp.user.deleteUser(id)>
+			<cfset request.pApp.user.deleteUser(id)>
 		</cfloop>
 		<cfoutput>
 		<p>
@@ -32,7 +32,7 @@
 	</cfif>
 	
 	<!--- get surveys --->
-	<cfset users =  request.pApp.user.getUsers()>
+	<cfset users = request.pApp.user.getUsers()>
 
 	<tags:datatable data="#users#" list="username" editlink="users_edit.cfm" linkcol="username" linkval="username" label="User">
 		<tags:datacol colname="username" label="Username" width="200" />	

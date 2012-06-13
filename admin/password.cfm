@@ -16,7 +16,7 @@
 <cfif isDefined("form.save")>
 	<cfset errors = "">
 	<!---
-	<cfif hash(form.oldpassword) is not  request.pApp.settings.password>
+	<cfif hash(form.oldpassword) is not request.pApp.settings.password>
 		<cfset errors = errors & "The old password did not match.<br>">
 	</cfif>
 	--->
@@ -25,7 +25,7 @@
 	</cfif>
 	<cfif not len(errors)>
 		<cftry>
-			<cfset  request.pApp.user.updatePassword(request.pSession.user.username,form.oldpassword,form.newpassword)>
+			<cfset request.pApp.user.updatePassword(request.pSession.user.username,form.oldpassword,form.newpassword)>
 			<cfset msg = "Your password has been updated.">
 			<cfcatch>
 				<cfset errors = cfcatch.message>

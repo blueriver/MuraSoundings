@@ -15,9 +15,9 @@
 	<cfif isDefined("form.mark") and len(form.mark)>
 		<cfloop index="id" list="#form.mark#">
         	<cfif not request.pSession.user.isAdmin>
-				<cfset  request.pApp.template.deleteTemplate(id,request.pSession.user.id)>
+				<cfset request.pApp.template.deleteTemplate(id,request.pSession.user.id)>
             <cfelse>
-            	<cfset  request.pApp.template.deleteTemplate(id)>
+            	<cfset request.pApp.template.deleteTemplate(id)>
             </cfif>
 		</cfloop>
 		<cfoutput>
@@ -30,9 +30,9 @@
 	
 	<!--- get qts --->
 	<cfif not request.pSession.user.isAdmin>
-		<cfset ts =  request.pApp.template.getTemplates(request.pSession.user.id)>
+		<cfset ts = request.pApp.template.getTemplates(request.pSession.user.id)>
 	<cfelse>
-		<cfset ts =  request.pApp.template.getTemplates()>
+		<cfset ts = request.pApp.template.getTemplates()>
 	</cfif>	
 
 	<tags:datatable data="#ts#" list="name" editlink="template_edit.cfm" linkcol="name" label="Template">

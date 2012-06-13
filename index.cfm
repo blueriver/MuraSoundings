@@ -1,4 +1,4 @@
-<cfif request.pluginConfig.getSetting("pluginMode") eq "Admin">
+<cfif not request.muraFrontEndRequest>
 	<!--- entry via admin--->
 	<cflocation url="admin" addtoken="no">
 <cfelse>

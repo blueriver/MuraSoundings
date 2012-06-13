@@ -10,6 +10,10 @@
 
 <cfoutput>
 </div><!--- div#container --->
+
+
+</body>
+</html>
 </cfoutput>
 
 <cfsetting enablecfoutputonly=true>

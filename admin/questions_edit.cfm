@@ -18,15 +18,15 @@
 
 <!--- get question if not new --->
 <cfif url.id neq 0>
-	<cfset question =  request.pApp.question.getQuestion(url.id)>
+	<cfset question = request.pApp.question.getQuestion(url.id)>
 	<cfset form.questionType = question.questionTypeIDFK>
 </cfif>
 
 
 <!--- get question types --->
-<cfset qts =  request.pApp.questiontype.getQuestionTypes()>
+<cfset qts = request.pApp.questiontype.getQuestionTypes()>
 <!--- get all questions for survey --->
-<cfset questions =  request.pApp.question.getQuestions(url.surveyidfk)>
+<cfset questions = request.pApp.question.getQuestions(url.surveyidfk)>
 
 <tags:layout templatename="admin" title="Question Editor">
 
@@ -52,7 +52,7 @@
 	
 <cfelse>
 
-	<cfset qt =  request.pApp.questionType.getQuestionType(form.questionType)>
+	<cfset qt = request.pApp.questionType.getQuestionType(form.questionType)>
 	
 	<cfset qs = cgi.query_string>
 	<cfif not findNoCase("questionType",qs)>
@@ -65,7 +65,7 @@
 		<cfset extra.question = question>
 	</cfif>
 	
-	<cfset top =  request.pApp.survey.getTopRank(surveyidfk)>
+	<cfset top = request.pApp.survey.getTopRank(surveyidfk)>
 	
 	<!--- fire edit handler for qt --->
 	<cfoutput><div id="formwatcher"></cfoutput>

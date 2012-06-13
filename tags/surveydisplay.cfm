@@ -16,16 +16,16 @@
 
 <!--- Initialize in session scope if it doesn't exist --->
 <cfif not structKeyExists(session,"surveys")>
-	<cfset request.pSession.surveys = structNew()>
+	<cfset session.surveys = structNew()>
 </cfif>
 
 <!--- Initialize certain values in the session struct --->
-<cfif not structKeyExists(request.pSession.surveys,attributes.survey.id)>
-	<cfset request.pSession.surveys[attributes.survey.id]  = structNew()>
-	<cfset request.pSession.surveys[attributes.survey.id] .currentStep = 1>
-	<cfset request.pSession.surveys[attributes.survey.id] .answers = structNew()>
-	<cfset request.pSession.surveys[attributes.survey.id] .maxQuestions = request.pApp.question.getQuestions(attributes.survey.id).recordCount>
-	<cfset request.pSession.surveys[attributes.survey.id] .toskip = structNew()>
+<cfif not structKeyExists(session.surveys,attributes.survey.id)>
+	<cfset session.surveys[attributes.survey.id] = structNew()>
+	<cfset session.surveys[attributes.survey.id].currentStep = 1>
+	<cfset session.surveys[attributes.survey.id].answers = structNew()>
+	<cfset session.surveys[attributes.survey.id].maxQuestions = request.pApp.question.getQuestions(attributes.survey.id).recordCount>
+	<cfset session.surveys[attributes.survey.id].toskip = structNew()>
 </cfif>
 
 <!--- First see if survey is protected --->
@@ -48,12 +48,12 @@
 	<cfabort>
 </cfif>
 <!--- Is it protected by password? --->
-<cfif len(attributes.survey.surveypassword) and not structKeyExists(request.pSession.surveys[attributes.survey.id] ,"auth")>
+<cfif len(attributes.survey.surveypassword) and not structKeyExists(session.surveys[attributes.survey.id],"auth")>
 	<cfset showForm = true>
 	<cfset showError = false>
 	<cfif isDefined("form.password")>
 		<cfif form.password eq attributes.survey.surveypassword>
-			<cfset request.pSession.surveys[attributes.survey.id] .auth = true>
+			<cfset session.surveys[attributes.survey.id].auth = true>
 			<cfset showForm = false>
 		<cfelse>
 			<cfset showError = true>
@@ -75,7 +75,7 @@
 	</cfif>
 </cfif>
 <!--- Is it protected by an email list? --->
-<cfif len(attributes.survey.emaillist) and not structKeyExists(request.pSession.surveys[attributes.survey.id] ,"auth")>
+<cfif len(attributes.survey.emaillist) and not structKeyExists(session.surveys[attributes.survey.id],"auth")>
 	<cfset showForm = true>
 	<cfset showError = false>
 	<cfset showDone = false>
@@ -84,8 +84,8 @@
 			<cfif request.pApp.survey.surveyCompletedBy(attributes.survey.id,form.email)>
 				<cfset showDone = true>
 			<cfelse>
-				<cfset request.pSession.surveys[attributes.survey.id] .auth = true>
-				<cfset request.pSession.surveys[attributes.survey.id] .owner = form.email>
+				<cfset session.surveys[attributes.survey.id].auth = true>
+				<cfset session.surveys[attributes.survey.id].owner = form.email>
 				<cfset showForm = false>
 			</cfif>
 		<cfelse>
@@ -111,7 +111,7 @@
 </cfif>
 
 <!--- Get a pointer to current session info on the survey --->
-<cfset currentInfo = request.pSession.surveys[attributes.survey.id] >
+<cfset currentInfo = session.surveys[attributes.survey.id]>
 
 <!--- how many per page? --->
 <cfif isNumeric(attributes.survey.questionsperpage)>
@@ -134,11 +134,11 @@
 <!--- They finished the survey --->
 <cfif firstOnPage gt currentInfo.maxQuestions>
 	<cfset extra = structNew()>
-	<cfif structKeyExists(request.pSession.surveys[attributes.survey.id] ,"owner")>
-		<cfset extra.owner = request.pSession.surveys[attributes.survey.id] .owner>
+	<cfif structKeyExists(session.surveys[attributes.survey.id],"owner")>
+		<cfset extra.owner = session.surveys[attributes.survey.id].owner>
 	</cfif>		
-	<cf_surveycomplete survey="#attributes.survey#" data="#request.pSession.surveys[attributes.survey.id] #" attributeCollection="#extra#"/>
-	<cfset structDelete(request.pSession.surveys,attributes.survey.id)>
+	<cf_surveycomplete survey="#attributes.survey#" data="#session.surveys[attributes.survey.id]#" attributeCollection="#extra#"/>
+	<cfset structDelete(session.surveys,attributes.survey.id)>
 	<cfset surveyComplete = true>
 </cfif>
 
@@ -289,7 +289,7 @@
 					<cfset answer = currentInfo.answers[lastQuestion.id]>
 					<cfset theanswermatches = false>
 					<!--- first do a simple check - assumes answer is simple --->
-					<cfif isSimpleValue(answer) and answer is lastQuestion.nextQuestionValue>
+					<cfif isSimpleValue(answer) and answer is nextQuestionValue>
 						<cfset theAnswerMatches = true>
 					</cfif>
 					<!--- next support our MC with a .list key --->

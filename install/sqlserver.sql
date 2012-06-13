@@ -7,19 +7,12 @@ CREATE TABLE [dbo].[answers] (
 ) ON [PRIMARY]
 GO
 
-	id               	varchar(35) NOT NULL,
-	questionidfk     	varchar(35) NOT NULL,
-	nextquestion     	varchar(35) NOT NULL,
-	nextquestionvalue	varchar(255) NOT NULL,
-	rank             	int(11) NOT NULL,
-	PRIMARY KEY(id)
-
 CREATE TABLE [dbo].[questionbranches] (
 	[id] [nvarchar] (35) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
 	[questionidfk] [nvarchar] (35) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
 	[nextquestionvalue] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
-	[nextquestion] [nvarchar] (35) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL 
-	
+	[nextquestion] [nvarchar] (35) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[rank] [int] NOT NULL 
 ) ON [PRIMARY]
 GO
 

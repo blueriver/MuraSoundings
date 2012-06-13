@@ -13,8 +13,8 @@
 	<cfabort>
 </cfif>
 
-<cfset question =  request.pApp.question.getQuestion(url.questionidfk)>
-<cfset qt =  request.pApp.questiontype.getQuestionType(question.questiontypeidfk)>
+<cfset question = request.pApp.question.getQuestion(url.questionidfk)>
+<cfset qt = request.pApp.questiontype.getQuestionType(question.questiontypeidfk)>
 <cfmodule template="../handlers/#qt.handlerRoot#/stats.cfm" 
 			questionidfk="#url.questionidfk#"
 			r_data="data" 

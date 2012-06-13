@@ -38,12 +38,12 @@
 		
 		<cftry>	
 			<cfif url.id neq 0>
-				<cfset user =  request.pApp.user.getUser(url.id)>
+				<cfset user = request.pApp.user.getUser(url.id)>
 				<cfset data.id = user.id>
 				<cfset data.originalusername = user.username>
-				<cfset  request.pApp.user.updateUser(argumentCollection=data)>
+				<cfset request.pApp.user.updateUser(argumentCollection=data)>
 			<cfelse>
-				<cfset  request.pApp.user.addUser(argumentCollection=data)>		
+				<cfset request.pApp.user.addUser(argumentCollection=data)>		
 			</cfif>
 			<cfset msg = "User, #form.username#, has been updated.">
 			<cflocation url="users.cfm?msg=#urlEncodedFormat(msg)#" addToken="false">
@@ -57,7 +57,7 @@
 
 <!--- get user if not new --->
 <cfif url.id neq 0>
-	<cfset user =  request.pApp.user.getUser(url.id)>
+	<cfset user = request.pApp.user.getUser(url.id)>
 	<cfparam name="form.username" default="#user.username#">
 	<cfif not isBoolean(user.isAdmin) or not user.isAdmin>
 		<cfparam name="form.isadmin" default="false">

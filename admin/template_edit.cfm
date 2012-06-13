@@ -17,9 +17,9 @@
 <!--- get template if not new --->
 <cfif url.id neq "0">
 	<cfif not request.pSession.user.isAdmin>
-		<cfset t =  request.pApp.template.getTemplate(url.id,request.pSession.user.id)>
+		<cfset t = request.pApp.template.getTemplate(url.id,request.pSession.user.id)>
 	<cfelse>
-		<cfset t =  request.pApp.template.getTemplate(url.id)>
+		<cfset t = request.pApp.template.getTemplate(url.id)>
 	</cfif>
 	<cfparam name="form.name" default="#t.name#">
 	<cfparam name="form.header" default="#t.header#">
@@ -39,9 +39,9 @@
 	<cfif not len(errors)>
 
 		<cfif url.id neq 0>
-			<cfset  request.pApp.template.updateTemplate(url.id, form.name, form.header, form.footer, t.useridfk)>
+			<cfset request.pApp.template.updateTemplate(url.id, form.name, form.header, form.footer, t.useridfk)>
 		<cfelse>
-			<cfset  request.pApp.template.addTemplate(form.name, form.header, form.footer, request.pSession.user.id)>
+			<cfset request.pApp.template.addTemplate(form.name, form.header, form.footer, request.pSession.user.id)>
 		</cfif>
 				
 		<cfset msg = "Template, #form.name#, has been updated.">

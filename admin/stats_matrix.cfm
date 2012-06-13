@@ -7,8 +7,7 @@
 --->
 
 
-<cfchart format="flash" chartWidth="575" chartHeight="575" show3d=true showLegend=true style="style.xml">
-<!---<cfchart format="flash" chartWidth="575" chartHeight="575" rotated="yes" show3d=true showLegend=true style="style.xml">--->
+<cfchart format="flash" chartWidth="575" chartHeight="575" rotated="yes" show3d=true showLegend=true style="style.xml">
 <cfloop list="#sortedItems#" index="item">
 	<cfset label = data[item].label>							
 		<cfchartseries type="bar" paintStyle="raise" seriesColor="#currentColor#" seriesLabel="#label#">

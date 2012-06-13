@@ -15,7 +15,7 @@
 	<!--- handle deletions --->
 	<cfif isDefined("form.mark") and len(form.mark)>
 		<cfloop index="id" list="#form.mark#">
-			<cfset  request.pApp.survey.deleteSurvey(id)>
+			<cfset request.pApp.survey.deleteSurvey(id)>
 		</cfloop>
 		<cfoutput>
 		<p>
@@ -26,9 +26,9 @@
 	
 	<!--- get surveys --->
 	<cfif not request.pSession.user.isAdmin>
-		<cfset surveys =  request.pApp.survey.getSurveys(useridfk=request.pSession.user.id)>
+		<cfset surveys = request.pApp.survey.getSurveys(useridfk=request.pSession.user.id)>
 	<cfelse>
-		<cfset surveys =  request.pApp.survey.getSurveys()>
+		<cfset surveys = request.pApp.survey.getSurveys()>
 	</cfif>
 	
 	<cfset queryAddColumn(surveys, "questions", arrayNew(1))>

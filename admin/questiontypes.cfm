@@ -19,7 +19,7 @@
 	<!--- handle deletions --->
 	<cfif isDefined("form.mark") and len(form.mark)>
 		<cfloop index="id" list="#form.mark#">
-			<cfset  request.pApp.questionType.deleteQuestionType(id)>
+			<cfset request.pApp.questionType.deleteQuestionType(id)>
 		</cfloop>
 		<cfoutput>
 		<p>
@@ -29,7 +29,7 @@
 	</cfif>
 	
 	<!--- get qts --->
-	<cfset qts =  request.pApp.questionType.getQuestionTypes()>
+	<cfset qts = request.pApp.questionType.getQuestionTypes()>
 
 	
 	<tags:datatable data="#qts#" list="name,handlerroot" editlink="questiontypes_edit.cfm" linkcol="name" label="QuestionType"

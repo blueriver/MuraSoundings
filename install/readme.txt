@@ -16,6 +16,29 @@ wishlist: http://www.amazon.com/o/registry/2TCL1D08EZEYE
 
 
 ========================================= CURRENT UPDATES =========================================
+Last Update: June 10, 2012 (Version 4.5.2)
+/cfcs/settings.xml.cfm - version
+/cfcs/survey.cfc and question.cfc - fixes for duplicating surveys and questions. Credit to user Grant
+
+========================================= ARCHIVED UPDATES =========================================
+Last Update: April 25, 2012 (Version 4.5.1)
+/cfcs/settings.xml.cfm - version
+/tags/surverydisplay.cfm - yet another branching fix
+
+Last Update: April 11, 2012 (Version 4.5)
+/admin/stats.cfm - display bug - not a real fix - just disabled he cf7 one
+
+Last Update: March 6, 2012 (Version 4.4)
+/install/sqlserver.sql - missing rank
+
+Last Update: February 12, 2012 (Version 4.3)
+Thanks to Bill Rae for testing/investigating.
+
+/install/sqlserver.sql - typos in file
+/cfcs/question.cfc - more logical fixes to branching
+/cfcs/settings.xml.cfm - version
+/handlers/nextquestion.cfm - more branching fixes
+
 Last Update: January 19, 2012 (Version 4.2)
 
 /cfcs/settings.xml.cfm - Just the version
@@ -24,7 +47,6 @@ Last Update: January 19, 2012 (Version 4.2)
 
 All fixes credit to Jens Herden
 
-========================================= ARCHIVED UPDATES =========================================
 Last Update: November 21, 2011 (Version 4.1)
 
 A major update to branching has been added. You can now do multiple
